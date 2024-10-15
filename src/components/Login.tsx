@@ -1,22 +1,27 @@
 import axios from "axios";
 import { useState, useContext } from "react";
 import { AuthContext, AuthContextType } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { setIsAuthenticated } = useContext(AuthContext) as AuthContextType;
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        {
+          username,
+          password,
+        }
+      );
       localStorage.setItem("token", response.data.access_token);
       setIsAuthenticated(true);
       alert("Login successful!");
+      navigate("/"); // Redirect to Home component
     } catch (error) {
       console.error("Error during login:", error);
     }
